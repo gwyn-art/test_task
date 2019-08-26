@@ -1,6 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
+
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import { makeStyles } from '@material-ui/core/styles';
 
 import {Table, TableRowActions} from './components/Table';
+import { DrugPopup, DrugPopupTypes } from './components/Popups';
 import {db} from './firebase';
 
 const body = [
@@ -27,7 +32,22 @@ db.collection("medicines_ruslan").get().then((querySnapshot) => {
   });
 });
 
+const useStyles = makeStyles(theme => ({
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  }
+}));
+
+
 const App = () => {
+  const classes = useStyles();
+  
+  const [popupType, setPopupType] = useState(DrugPopupTypes.ADD);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [editedDrugData, setEditedDragData] = useState({});
+
   return (
     <div className="App">
       <Table
@@ -38,7 +58,11 @@ const App = () => {
           actions: [
             {
               type: TableRowActions.EDITABLE,
-              handle: id => console.log(`Edited ${id}`)
+              handle: id => {
+                setEditedDragData(body.filter(drug => drug.id === id)[0]);
+                setPopupType(DrugPopupTypes.EDIT);
+                setPopupOpen(true);
+              }
             },
             {
               type: TableRowActions.REMOVABLE,
@@ -46,6 +70,24 @@ const App = () => {
             }
           ]
         }}
+      />
+      <Fab 
+        className={classes.fab} 
+        aria-label='Create' 
+        color='primary'
+        onClick={() => { 
+          setPopupType(DrugPopupTypes.ADD);
+          setPopupOpen(true);
+        }}
+      >
+        <AddIcon/>
+      </Fab>
+      <DrugPopup
+        open={popupOpen}
+        type={popupType}
+        handleClose={() => setPopupOpen(false)}
+        handleConfirm={() => console.log('Drug Created')}
+        editData={editedDrugData}
       />
     </div>
   );
