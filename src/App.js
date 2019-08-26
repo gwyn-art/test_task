@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {Table, TableRowActions} from './components/Table';
+import {db} from './firebase';
 
 const body = [
   {
@@ -20,7 +21,13 @@ const body = [
 const head = ['Code', 'Name', 'Price ($)'];
 const types = ['code', 'name', 'price'];
 
-function App() {
+db.collection("medicines_ruslan").get().then((querySnapshot) => {
+  querySnapshot.forEach((doc) => {
+      console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+  });
+});
+
+const App = () => {
   return (
     <div className="App">
       <Table
