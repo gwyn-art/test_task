@@ -6,6 +6,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/styles';
 
+import { useDoubleClick } from '../../hooks';
+
 export const TableRowActions = {
   EDITABLE: 'EDITABLE',
   REMOVABLE: 'REMOVABLE'
@@ -45,10 +47,18 @@ export const TableRow = (props) => {
   } = props;
 
   const classes = useStyles();
+  const rowDoubleClick = useDoubleClick(() => {
+    const editAction = actions.filter(({type}) => type === TableRowActions.EDITABLE)[0];
+
+    if (editAction) {
+      editAction.handle(id);
+    }
+  });
 
   return (
     <MaterialTableRow
       className={parentClasses.tableRow || ''}
+      onClick={rowDoubleClick}
     >
       {
         content.map((element = '', index) => 
