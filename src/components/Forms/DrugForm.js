@@ -28,7 +28,9 @@ export const DrugForm = (props) => {
   const {
     initialValues,
     step = 1,
-    onChange = () => {}
+    onChange = () => {},
+    formRef,
+    onSubmit
   } = props;
   
   const classes = useStyles();
@@ -37,8 +39,10 @@ export const DrugForm = (props) => {
     <Formik
       initialValues={initialValues || {}}
       validationSchema={drugFormSchema}
+      onSubmit={onSubmit}
+      ref={formRef}
     >
-      {({ errors, touched, setFieldValue, values, isValid }) => {
+      {({ errors, touched, setFieldValue, values, isValid}) => {
         onChange(isValid, values);
 
         return (

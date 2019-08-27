@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {connect} from 'react-redux';
 
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { DrugForm } from '../Forms';
-import { ADD_DRUG, EDIT_DRUG, DRUGS_ACTIONS } from '../../actions';
+import { ADD_DRUG, EDIT_DRUG } from '../../actions';
 
 export const DrugPopupTypes = {
   'EDIT': 'EDIT',
@@ -73,12 +73,25 @@ const DrugPopupComponent = (props) => {
   const [isValid, setIsValid] = useState(false);
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState('');
+  const formRef = useRef(null);
 
   useEffect(() => {
     if (error.length) {
       setTimeout(() => setError(''), 5000);
     }
   }, [error]);
+
+  const handleSubmit = async () => {
+    if (type === DrugPopupTypes.ADD) {
+      addDrug(formValues)
+        .then(() => handleClose())
+        .catch(err => (console.log(err), setError(err.message)));
+    } else {
+      editDrug({...formValues, id: initialValues.id})
+        .then(() => handleClose())
+        .catch(err => setError(err.message));
+    }
+  };
 
   return (
     <Dialog 
@@ -95,6 +108,8 @@ const DrugPopupComponent = (props) => {
             setIsValid(isValid);
             setFormValues(values);
           }}
+          formRef={formRef}
+          onSubmit={handleSubmit}
           initialValues={type === DrugPopupTypes.ADD ? {} : initialValues}
           step={step}
         />
@@ -108,17 +123,7 @@ const DrugPopupComponent = (props) => {
         isValid,
         handleClose, 
         dif => setStep(step + dif),
-        async () => {
-          if (type === DrugPopupTypes.ADD) {
-            addDrug(formValues)
-              .then(() => handleClose())
-              .catch(err => setError(err.message));
-          } else {
-            editDrug({...formValues, id: initialValues.id})
-              .then(() => handleClose())
-              .catch(err => setError(err.message));
-          }
-        }
+        () => formRef.current && formRef.current.submitForm()
       )}
     </Dialog>
   );
