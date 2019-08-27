@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { DrugForm } from '../Forms';
 import { ADD_DRUG, EDIT_DRUG } from '../../actions';
+import { Box } from '@material-ui/core';
 
 export const DrugPopupTypes = {
   'EDIT': 'EDIT',
@@ -113,9 +114,9 @@ const DrugPopupComponent = (props) => {
           initialValues={type === DrugPopupTypes.ADD ? {} : initialValues}
           step={step}
         />
-        <p>
+        <Box textAlign="center" color="error">
           {error}
-        </p>
+        </Box>
       </DialogContent>
       {DrugPopupActions(
         step, 
