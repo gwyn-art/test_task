@@ -25,7 +25,7 @@ Simply actions and reducers for Drug domain :)
 * `redux-promise-middleware` as middleware for working with firebase (I used it for first time and it seems pretty handy)
 * `formik yup` for form validations
 * `moment` for date picker and works with date
-* 
+
 ## Time spent:
 * ~5 hours for dev and thinking of architecture
 * ~1.5 hour for docs (firebase, material ui and promise middleware)
