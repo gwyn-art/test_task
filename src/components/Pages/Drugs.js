@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import { Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {Table, TableRowActions} from '../Table';
@@ -18,6 +19,13 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+  },
+  tableWrapper: {
+    maxWidth: 800,
+    margin: '40px auto',
+    [theme.breakpoints.down('sm')]: {
+      margin: '0',
+    }
   }
 }));
 
@@ -39,7 +47,7 @@ const DrugsPageComponent = (props) => {
   }, [getDrugs]);
 
   return (
-    <div className="App">
+    <Paper className={classes.tableWrapper}>
       <Table
         content={{
           body: drugList,
@@ -78,7 +86,7 @@ const DrugsPageComponent = (props) => {
         handleClose={() => setPopupOpen(false)}
         initialValues={initialValues}
       />
-    </div>
+    </Paper>
   );
 }
 
