@@ -28,28 +28,18 @@ export const DrugForm = (props) => {
   const {
     initialValues,
     step = 1,
-    onValidationChange = () => {}
+    onChange = () => {}
   } = props;
   
   const classes = useStyles();
 
   return (
     <Formik
-      initialValues={initialValues || {
-        code: '',
-        name: '',
-        expiration_date: moment(moment.now()).add(1, 'days')
-      }}
+      initialValues={initialValues || {}}
       validationSchema={drugFormSchema}
-      onSubmit={(values, actions) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          actions.setSubmitting(false);
-        }, 1000);
-      }}
     >
-      {({ errors, status, touched, setFieldValue, isValid }) => {
-        onValidationChange(isValid);
+      {({ errors, touched, setFieldValue, values, isValid }) => {
+        onChange(isValid, values);
 
         return (
           <Form>

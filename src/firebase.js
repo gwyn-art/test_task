@@ -20,3 +20,4 @@ firebase
   .catch(() => console.error('Unable connect to Firebase.'));
 
   export const db = firebase.firestore();
+  export const drugsCollection = db.collection('medicines_ruslan');

@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { DrugForm } from '../Forms';
+import { ADD_DRUG, EDIT_DRUG, DRUGS_ACTIONS } from '../../actions';
 
 export const DrugPopupTypes = {
   'EDIT': 'EDIT',
@@ -50,23 +52,33 @@ const DrugPopupActions = (
         variant="contained" 
         color="primary"
         disabled={!isValid}
+        onClick={handleConfirm}
       >
         {type === DrugPopupTypes.ADD ? 'Create' : 'Edit'}
       </Button>
     </DialogActions>
   ][step];
 
-export const DrugPopup = (props) => {
+const DrugPopupComponent = (props) => {
   const {
     open = false,
     handleClose = () => {},
-    handleConfirm = () => {},
     type = DrugPopupActions.ADD,
-    editData = {}
+    initialValues = {},
+    addDrug,
+    editDrug
   } = props;
 
   const [step, setStep] = useState(0);
   const [isValid, setIsValid] = useState(false);
+  const [formValues, setFormValues] = useState({});
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (error.length) {
+      setTimeout(() => setError(''), 5000);
+    }
+  }, [error]);
 
   return (
     <Dialog 
@@ -75,13 +87,20 @@ export const DrugPopup = (props) => {
       onClose={handleClose}
     >
       <DialogTitle>
-        {DrugPopupTitles(type, step, editData.name)}
+        {DrugPopupTitles(type, step, initialValues.name)}
       </DialogTitle>
       <DialogContent>
         <DrugForm
-          onValidationChange={isValid => setIsValid(isValid)}
+          onChange={(isValid, values) => {
+            setIsValid(isValid);
+            setFormValues(values);
+          }}
+          initialValues={type === DrugPopupTypes.ADD ? {} : initialValues}
           step={step}
         />
+        <p>
+          {error}
+        </p>
       </DialogContent>
       {DrugPopupActions(
         step, 
@@ -89,8 +108,30 @@ export const DrugPopup = (props) => {
         isValid,
         handleClose, 
         dif => setStep(step + dif),
-        handleConfirm
+        async () => {
+          if (type === DrugPopupTypes.ADD) {
+            addDrug(formValues)
+              .then(() => handleClose())
+              .catch(err => setError(err.message));
+          } else {
+            editDrug({...formValues, id: initialValues.id})
+              .then(() => handleClose())
+              .catch(err => setError(err.message));
+          }
+        }
       )}
     </Dialog>
   );
 }
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = dispatch => ({
+  addDrug: async data => dispatch(ADD_DRUG(data)),
+  editDrug: async data => dispatch(EDIT_DRUG(data))
+});
+
+export const DrugPopup = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DrugPopupComponent);

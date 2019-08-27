@@ -37,17 +37,17 @@ export const Table = (props) => {
         </MaterialTableRow>
       </TableHead>
       <TableBody>
-          {
-            body.map(element => 
-              <TableRow
-                key={element.id}
-                id={element.id}
-                content={types.map(type => element[type] || '')}
-                types={types}
-                actions={actions}
-              />  
-            )
-          }
+        {
+          body.map(element => 
+            <TableRow
+              key={element.id}
+              id={element.id}
+              content={types.map(type => element[type] || '')}
+              types={types}
+              actions={actions}
+            />  
+          )
+        }
       </TableBody>
     </MaterialTable>
   );
