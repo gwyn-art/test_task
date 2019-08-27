@@ -16,7 +16,7 @@ Popup wrapper on DrugForm. Keeping control of steps change and form submitting.
 DrugForm split in 2 steps.
 #### /firebase
 Helper for firebase connection.
-### /actions and /reducers
+#### /actions and /reducers
 Simply actions and reducers for Drug domain :)
 
 ## Used:
